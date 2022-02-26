@@ -1,0 +1,26 @@
+service: ukraine-rideshare-api
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'staging'}
+  region: ${opt:region, 'us-east-1'}
+  environment: 
+    NODE_ENV: "production"
+    MONGODB_URL: ${self:custom.mongodbUrl.${self:provider.stage}}
+    
+functions:
+  app:
+    handler: server.handler
+    events:
+      - http: 
+          path: /
+          method: ANY
+      - http: 
+          path: /{proxy+}
+          method: ANY
+
+custom:
+  mongodbUrl:
+    staging: ""
+    
